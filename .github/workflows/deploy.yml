@@ -5,10 +5,13 @@ on:
 #    types: [review_requested]
   issue_comment:
     types: [created, edited]
+  workflow_dispatch:
 
 jobs:
   deploy_staging:
-    if: ${{ github.event.issue.pull_request && github.event.requested_team.name == 'hackers' && contains(github.event.comment.body, '/staging') }}
+    if: |
+      ${{ github.event.issue.pull_request && github.event.requested_team.name == 'hackers' && contains(github.event.comment.body, '/staging') }} ||
+      ${{ github.event.workflow_dispatch && github.event.requested_team.name == 'hackers' }}
     runs-on: ubuntu-22.04
     environment: stagingdeploy
     steps:
